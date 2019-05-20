@@ -1,12 +1,14 @@
 require([
-    "esri/Map",
+    "esri/WebMap",
     "esri/views/MapView"
 ], function (
-    Map,
+    WebMap,
     MapView
 ) {
-        var map = new Map({
-            basemap: "topo"
+        var map = new WebMap({
+            portalItem: {
+                id: "e691172598f04ea8881cd2a4adaa45ba"
+              }
         });
         var view = new MapView({
             container: "viewDiv",
