@@ -1,6 +1,6 @@
 require([
     "esri/WebMap",
-    "esri/views/MapView",
+    "esri/views/SceneView",
     "esri/widgets/Expand",
     "esri/widgets/BasemapGallery",
     "esri/widgets/BasemapToggle",
@@ -12,7 +12,7 @@ require([
     "esri/widgets/Search"
 ], function (
     WebMap,
-    MapView,
+    SceneView,
     Expand,BasemapGallery,BasemapToggle,Home,
     Legend,LayerList,Print,ScaleBar,Search
 ) {
@@ -21,12 +21,12 @@ require([
                 id: "2460fa4e72044a33a465a8ffd9bdf774"
               }
         });
-        var view = new MapView({
+        var view = new SceneView({
             container: "viewDiv",
             map: map,
-           ui:{
-                components:["zoom","compass","attribution"]
-           }
+        //    ui:{
+        //         components:["zoom","compass","attribution"]
+        //    }
         });
 
         view.then(function(){
