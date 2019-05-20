@@ -1,5 +1,5 @@
 require([
-    "esri/WebMap",
+    "esri/Map",
     "esri/views/SceneView",
     "esri/widgets/Expand",
     "esri/widgets/BasemapGallery",
@@ -11,15 +11,14 @@ require([
     "esri/widgets/ScaleBar",
     "esri/widgets/Search"
 ], function (
-    WebMap,
+    Map,
     SceneView,
     Expand,BasemapGallery,BasemapToggle,Home,
     Legend,LayerList,Print,ScaleBar,Search
 ) {
-        var map = new WebMap({
-            portalItem: {
-                id: "2460fa4e72044a33a465a8ffd9bdf774"
-              }
+        var map = new Map({
+          basemap:"stallite",
+          ground:"world-elevation"
         });
         var view = new SceneView({
             container: "viewDiv",
