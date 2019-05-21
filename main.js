@@ -1,6 +1,7 @@
 require([
-    "esri/Map",
+    "esri/WebScene",
     "esri/views/SceneView",
+    //widgets
     "esri/widgets/Expand",
     "esri/widgets/BasemapGallery",
     "esri/widgets/BasemapToggle",
@@ -11,21 +12,22 @@ require([
     "esri/widgets/ScaleBar",
     "esri/widgets/Search"
 ], function (
-    Map,
+    WebScene,
     SceneView,
     Expand,BasemapGallery,BasemapToggle,Home,
     Legend,LayerList,Print,ScaleBar,Search
 ) {
-        var map = new Map({
-          basemap:"stallite",
-          ground:"world-elevation"
+        var map = new WebScene({
+            portalItem: {
+                id: "e18d908bacd440f6ab15b75e85f637b4"
+              }
         });
         var view = new SceneView({
             container: "viewDiv",
             map: map,
-        //    ui:{
-        //         components:["zoom","compass","attribution"]
-        //    }
+           ui:{
+                components:["zoom","compass","attribution"]
+           }
         });
 
         view.then(function(){
