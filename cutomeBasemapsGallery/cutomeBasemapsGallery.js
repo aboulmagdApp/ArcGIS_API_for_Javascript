@@ -2,16 +2,22 @@ let map;
 let mapview;
 let layer;
 let basemaps = [];
+// "streets", "satellite", "hybrid", "terrain", "topo", "gray", "dark-gray", "oceans", 
+// "national-geographic", "osm", "dark-gray-vector", "gray-vector", "streets-vector", 
+// "topo-vector", "streets-night-vector", "streets-relief-vector", "streets-navigation-vector"
 basemaps.push("satellite");
 basemaps.push("topo");
 basemaps.push("osm");
-let setBasemap = function(e){map.basemap = e.target.id;}
+basemaps.push("hybrid");
+basemaps.push("terrain");
+basemaps.push("dark-gray");
+let setBasemap = e => map.basemap = e.target.id;
 for (let i = 0; i < basemaps.length; i++) {
     let buttons = document.getElementById("buttons");
     let button = document.createElement("button");
     button.id = basemaps[i];
     button.textContent = basemaps[i];
-    button.addEventListener("click",setBasemap);
+    button.addEventListener("click", setBasemap);
     buttons.appendChild(button);
 }
 require([
