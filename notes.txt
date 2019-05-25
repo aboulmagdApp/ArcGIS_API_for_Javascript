@@ -1,0 +1,8 @@
+can I find some information about the map in the browser console by a quick revision: - 
+
+- map.layers.length     =========> this when I want to get count of layer on this map
+- map.layers.items[0].title =====> when I want to get mapService title
+- map.layers.items[0].sublayers.length ========> to find count of sublayers on mapService
+- map.layers.items[0].findSublayerById(0).title  =======> get title for sublayers in mapService
+- map.layers.items[0].findSublayerById(0).visible = true/false =======> to hide or display layer on a map
+- layer.sublayers.items[1].id ===========> to get sublayers id
