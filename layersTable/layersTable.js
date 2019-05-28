@@ -3,6 +3,7 @@ let mapview;
 let layer;
 let Request;
 let selectedService;
+const DEFAULT_BASMAP ="streets";
 require([
     "esri/Map",
     "esri/views/MapView",
@@ -22,7 +23,7 @@ require([
 ) {
         Request = esriRequest;
         generateBasemaps();
-        map = new Map({ basemap: "streets" });
+        map = new Map({ basemap: DEFAULT_BASMAP });
         let viewoptions = {
             container: "mapDiv",
             map: map,
@@ -151,13 +152,22 @@ function generateBasemaps() {
     basemaps.push("hybrid");
     basemaps.push("terrain");
     basemaps.push("dark-gray");
-    let setBasemap = e => map.basemap = e.target.id;
+    basemaps.push("oceans");
+    basemaps.push("streets");
+    let setBasemap = function(e){
+        let list = e.target;
+        let selectedBasemap = list.options[list.selectedIndex].textContent;
+        map.basemap = selectedBasemap;
+    }
+    let cmbbasemaps = document.getElementById("buttons");
+    cmbbasemaps.addEventListener("change", setBasemap);
+
     for (let i = 0; i < basemaps.length; i++) {
-        let buttons = document.getElementById("buttons");
-        let button = document.createElement("button");
-        button.id = basemaps[i];
-        button.textContent = basemaps[i];
-        button.addEventListener("click", setBasemap);
-        buttons.appendChild(button);
+        let option = document.createElement("option");
+        option.id = basemaps[i];
+        option.textContent = basemaps[i];
+        //set default select in drop down
+        if(basemaps[i] == DEFAULT_BASMAP) option.selected = true;
+        cmbbasemaps.appendChild(option);
     }
 }
