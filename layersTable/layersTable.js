@@ -1,7 +1,8 @@
 let map;
 let mapview;
 let layer;
-
+let Request;
+let selectedService;
 require([
     "esri/Map",
     "esri/views/MapView",
@@ -14,11 +15,12 @@ require([
     Map,
     MapView,
     SceneView,
-    Request,
+    esriRequest,
     MapLayer,
     Legend,
     Expand
 ) {
+        Request = esriRequest;
         generateBasemaps();
         map = new Map({ basemap: "streets" });
         let viewoptions = {
@@ -39,6 +41,7 @@ require([
 
         let url = "https://sampleserver6.arcgisonline.com/arcgis/rest/services?f=json";
         let options = { responseType: "json" };
+        getCount(9);
         Request(url, options).then(populateMapService);
 
         //populate the dropdown of mapService
@@ -55,7 +58,7 @@ require([
         }
 
         function onChageServeiceMap() {
-            let selectedService = lstservices.options[lstservices.selectedIndex].textContent;
+            selectedService = lstservices.options[lstservices.selectedIndex].textContent;
             //add layer
             layer = new MapLayer({ url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/" + selectedService + "/MapServer" });
             map.removeAll();
@@ -66,12 +69,25 @@ require([
                 toc.innerHTML = "";
                 let layerlist = document.createElement('ul');
                 toc.appendChild(layerlist);
-                populateLayer(layer, layerlist);
+                //populate layer in list
+                populateLayerRecursive(layer, layerlist);
                 mapview.goTo(layer.fullExtent)
             })
         }
     });
-
+function getCount(layerid,el) {
+    let queryurl = "https://sampleserver6.arcgisonline.com/arcgis/rest/services/" + selectedService + "/MapServer/" + layerid + "/query";
+    let queryOptions = {
+        responseType: "json",
+        query:
+        {
+            f: "json",
+            where: "1=1",
+            returnCountOnly: true
+        }
+    }
+    Request(queryurl, queryOptions).then(response => el.textContent = response.data.count,response => el.style.visibility ="hidden");
+}
 function populateLayer(thisLayer, layerlist) {
     for (let i = 0; i < thisLayer.sublayers.length; i++) {
         let sublayer = thisLayer.sublayers.items[i];
@@ -83,13 +99,44 @@ function populateLayer(thisLayer, layerlist) {
             let clickedlayer = thisLayer.findSublayerById(parseInt(e.target.value));
             clickedlayer.visible = e.target.checked;
         })
-        let lbl = document.createElement("lable");
+        let lbl = document.createElement("label");
         lbl.textContent = sublayer.title;
 
         let layeritem = document.createElement("li");
         layeritem.appendChild(chk);
         layeritem.appendChild(lbl);
         layerlist.appendChild(layeritem);
+    }
+}
+function populateLayerRecursive(thislayer, layerlist) {
+    let chk = document.createElement("input");
+    chk.type = "checkbox";
+    chk.value = thislayer.id;
+    chk.checked = thislayer.visible;
+
+    chk.addEventListener("click", e => thislayer.visible = e.target.checked);
+
+    let lbl = document.createElement("label");
+    lbl.textContent = thislayer.title;
+
+    let btn = document.createElement("button");
+    btn.textContent = "count";
+    getCount(thislayer.id,btn);
+    //btn.addEventListener("click", e => getCount(thislayer.id,btn));
+
+    let layeritem = document.createElement("li");
+    layeritem.appendChild(chk);
+    layeritem.appendChild(lbl);
+    layeritem.appendChild(btn);
+
+    layerlist.appendChild(layeritem);
+    if (thislayer.sublayers != null && thislayer.sublayers.items.length > 0) {
+        let newlist = document.createElement("ul");
+        layerlist.appendChild(newlist);
+        for (let i = 0; i < thislayer.sublayers.length; i++) {
+            populateLayerRecursive(thislayer.sublayers.items[i], newlist);
+
+        }
     }
 }
 //generate list of buttons for basemaps
