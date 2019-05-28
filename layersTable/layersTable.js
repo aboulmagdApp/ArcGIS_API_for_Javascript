@@ -11,7 +11,8 @@ require([
     "esri/request",
     "esri/layers/MapImageLayer",
     "esri/widgets/Legend",
-    "esri/widgets/Expand"
+    "esri/widgets/Expand",
+    "esri/widgets/Search"
 ], function (
     Map,
     MapView,
@@ -19,7 +20,8 @@ require([
     esriRequest,
     MapLayer,
     Legend,
-    Expand
+    Expand,
+    Search
 ) {
         Request = esriRequest;
         generateBasemaps();
@@ -33,12 +35,19 @@ require([
         }
         mapview = new MapView(viewoptions);
         let legend = new Legend({ view: mapview, container: document.createElement("div") });
+        let search = new Search({ view: mapview, container: document.createElement("div") });
         var legendExpand = new Expand({
             view: mapview,
             content: legend.domNode,
             expandIconClass: "esri-icon-layers"
         });
+        var searchExpand = new Expand({
+            view: mapview,
+            content: search.domNode,
+            expandIconClass: "esri-icon-search"
+        });
         mapview.ui.add(legendExpand, "bottom-left");
+        mapview.ui.add(searchExpand, "top-right");
 
         let url = "https://sampleserver6.arcgisonline.com/arcgis/rest/services?f=json";
         let options = { responseType: "json" };
@@ -154,6 +163,7 @@ function generateBasemaps() {
     basemaps.push("dark-gray");
     basemaps.push("oceans");
     basemaps.push("streets");
+    basemaps.push("topo-vector");
     let setBasemap = function(e){
         let list = e.target;
         let selectedBasemap = list.options[list.selectedIndex].textContent;
