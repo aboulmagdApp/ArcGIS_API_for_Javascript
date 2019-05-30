@@ -85,6 +85,51 @@ require([
             })
         }
     });
+function populateAttributesTable(e){
+    let queryurl = "https://sampleserver6.arcgisonline.com/arcgis/rest/services/" + selectedService + "/MapServer/" + e.target.layerid + "/query";
+    let attributetable = document.getElementById("attributetable");
+	attributetable.innerHTML ="";
+    let queryOptions = {
+        responseType: "json",
+        query:
+        {
+            f: "json",
+            where: "1=1",
+            returnCountOnly: false,
+            outFields: "*",
+            resultRecordCount: "50"
+        }
+    }
+    Request(queryurl, queryOptions).then(response => 
+        {
+            let table = document.createElement("table");
+            table.border =1;
+            let header = document.createElement("tr");
+            table.appendChild(header);
+            //populate the fields columns
+             for (let i = 0; i < response.data.fields.length; i++)
+             {
+                let column = document.createElement("td");
+                column.textContent = response.data.fields[i].alias;
+                header.appendChild(column);
+             }
+             //loop through all features
+	     	for (let j = 0; j < response.data.features.length; j++)
+	     	{
+	     		let feature = response.data.features[j];
+	     		let row = document.createElement("tr");
+	     		table.appendChild(row);
+	     		for (let i = 0; i < response.data.fields.length; i++)
+		     	{
+		     		let field = response.data.fields[i];
+					let column = document.createElement("td");
+					column.textContent = feature.attributes[field.name];
+					row.appendChild(column);
+		     	}
+	     	}
+             attributetable.appendChild(table);
+        },response => el.style.visibility ="hidden");
+}
 function getCount(layerid,el) {
     let queryurl = "https://sampleserver6.arcgisonline.com/arcgis/rest/services/" + selectedService + "/MapServer/" + layerid + "/query";
     let queryOptions = {
@@ -132,7 +177,9 @@ function populateLayerRecursive(thislayer, layerlist) {
     let btn = document.createElement("button");
     btn.textContent = "count";
     getCount(thislayer.id,btn);
-    //btn.addEventListener("click", e => getCount(thislayer.id,btn));
+    //on click fill table by data
+    btn.layerid = thislayer.id;
+    btn.addEventListener("click", populateAttributesTable);
 
     let layeritem = document.createElement("li");
     layeritem.appendChild(chk);
